@@ -3,7 +3,7 @@ esphome:
   comment: Everything Presence Lite
   friendly_name: ${friendly_name}
   name_add_mac_suffix: True
-  project: 
+  project:
     name: EverythingSmartTechnology.Everything Presence Lite
     version: "1.4.2"
   on_boot:
@@ -71,10 +71,10 @@ wifi:
 improv_serial:
 
 i2c:
--  id: bus_a
-   sda: 21
-   scl: 22
-   scan: true
+  - id: bus_a
+    sda: 21
+    scl: 22
+    scan: true
 
 light:
   - platform: status_led
@@ -101,21 +101,24 @@ number:
     icon: "mdi:brightness-5"
     entity_category: config
     on_value:
-      - lambda: 'id(illuminance_sensor).update();'
+      - lambda: "id(illuminance_sensor).update();"
 
 sensor:
-  - platform: bh1750
+  # Modified to use TSL2561 instead of BH1750
+  - platform: tsl2561
     name: Illuminance
     id: illuminance_sensor
     i2c_id: bus_a
-    address: 0x23
+    address: 0x39
+    integration_time: 402ms
+    gain: 1x
     update_interval: ${illuminance_update_interval}
     accuracy_decimals: 0
     filters:
       - lambda: "return x + id(illuminance_offset_ui).state;"
       - or:
-        - delta: 5%
-        - delta: 5
+          - delta: 5%
+          - delta: 5
       - clamp:
           min_value: 0
 
@@ -127,16 +130,16 @@ binary_sensor:
     id: flash_button
     internal: True
     filters:
-      - delayed_on: 50ms 
+      - delayed_on: 50ms
     on_multi_click:
       - timing:
           - ON for 0.2s to 3s
           - OFF for 0.1s to 2s
           - ON for 0.2s to 3s
           - OFF for 0.1s to 2s
-          - ON for at least 5s 
+          - ON for at least 5s
         then:
-          - repeat: 
+          - repeat:
               count: 5
               then:
                 - light.turn_on: esp32_led
