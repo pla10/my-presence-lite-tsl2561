@@ -76,12 +76,17 @@ i2c:
     scl: 22
     scan: true
 
+# LED normale (non status_led) per evitare lampeggio
+output:
+  - platform: gpio
+    pin: GPIO14
+    id: led_output
+
 light:
-  - platform: status_led
+  - platform: binary
     name: ESP32 LED
     id: esp32_led
-    pin: GPIO14
-    internal: False
+    output: led_output
     restore_mode: ALWAYS_OFF
     entity_category: config
 
