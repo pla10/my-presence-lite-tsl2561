@@ -29,4 +29,4 @@ dashboard_import:
 packages:
   device_base: !include common/everything-presence-lite-base.yaml
   ld2450_base: !include common/ld2450-base.yaml
-  bluetooth_base: !include common/bluetooth-base.yaml
+  bluetooth_base: !include common/bluetooth-base.yaml# trigger
