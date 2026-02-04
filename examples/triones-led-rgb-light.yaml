@@ -49,6 +49,10 @@ globals:
     type: int
     restore_value: no
     initial_value: "255"
+  - id: triones_color_pending
+    type: bool
+    restore_value: no
+    initial_value: "false"
 
 # Script per inviare comandi
 script:
@@ -76,8 +80,11 @@ script:
                 characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
                 value: [0xCC, 0x24, 0x33]
 
+  # Script con debounce per evitare flood di comandi
   - id: triones_send_color
+    mode: restart # Ogni nuova chiamata annulla la precedente
     then:
+      - delay: 50ms # Debounce: aspetta 50ms prima di inviare
       - if:
           condition:
             lambda: "return id(led_camera_connected);"
@@ -88,26 +95,9 @@ script:
                 characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
                 value: !lambda |-
                   return {0x56, (uint8_t)id(triones_r), (uint8_t)id(triones_g), (uint8_t)id(triones_b), 0x00, 0xF0, 0xAA};
-
-  - id: triones_send_effect
-    parameters:
-      effect_code: int
-      speed: int
-    then:
-      - if:
-          condition:
-            lambda: "return id(led_camera_connected);"
-          then:
-            - ble_client.ble_write:
-                id: led_camera
-                service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
-                characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
-                value: !lambda |-
-                  // speed 0-100 -> delay 1-31 (inverted)
-                  int delay = 31 - (speed * 30 / 100);
-                  if (delay < 1) delay = 1;
-                  if (delay > 31) delay = 31;
-                  return {0xBB, (uint8_t)effect_code, (uint8_t)delay, 0x44};
+            - logger.log:
+                format: "Colore inviato: R=%d G=%d B=%d"
+                args: ["id(triones_r)", "id(triones_g)", "id(triones_b)"]
 
 # Sensore per stato connessione (opzionale - per vedere in HA)
 binary_sensor:
@@ -126,6 +116,8 @@ light:
     green: triones_green_output
     blue: triones_blue_output
     restore_mode: ALWAYS_OFF
+    default_transition_length: 0s # IMPORTANTE: Disabilita transizioni per evitare flood
+    gamma_correct: 1.0 # Disabilita gamma correction per colori più accurati
     on_turn_on:
       - script.execute: triones_send_on
       - delay: 100ms
@@ -174,7 +166,7 @@ output:
           then:
             - script.execute: triones_send_color
 
-# Select per effetti (più affidabile degli effetti lambda)
+# Select per effetti
 select:
   - platform: template
     name: "LED Camera Effetto"
@@ -232,7 +224,6 @@ select:
             else if (selected == "Jump Colori") effect_code = 0x38;
 
             if (effect_code > 0 && id(led_camera_connected)) {
-              // Usa velocità dalla slider
               int speed = (int)id(triones_speed).state;
               int delay_val = 31 - (speed * 30 / 100);
               if (delay_val < 1) delay_val = 1;
@@ -263,10 +254,8 @@ number:
     on_value:
       then:
         - lambda: |-
-            // Rinvia l'effetto corrente con la nuova velocità
             auto selected = id(triones_effect).current_option();
             if (selected != "Nessuno" && id(led_camera_connected)) {
-              // Trigger re-send dell'effetto
               auto call = id(triones_effect).make_call();
               call.set_option(selected);
               call.perform();
