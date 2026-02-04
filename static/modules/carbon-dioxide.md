@@ -19,15 +19,15 @@ Please note the CO2 module is only compatible with Home Assistant.
 
 First take your Lite (with it powered off!) and identify the GPIO pins in the bottom corner (depending on your board your revision, these may look slightly different):
 
-![Everything Presence Lite GPIO Pins](https://everythingsmarthome.github.io/everything-presence-lite/images/everything-presence-lite-gpio-pins.jpg)
+![Everything Presence Lite GPIO Pins](https://pla10.github.io/my-presence-lite-tsl2561/images/everything-presence-lite-gpio-pins.jpg)
 
 Grab your CO2 module and push it onto the pins, making sure to line up the 3.3v and Ground pins:
 
-![Everything Presence Lite CO2 placement](https://everythingsmarthome.github.io/everything-presence-lite/images/everything-presence-co2-scd40-lite.jpg)
+![Everything Presence Lite CO2 placement](https://pla10.github.io/my-presence-lite-tsl2561/images/everything-presence-co2-scd40-lite.jpg)
 
 ## Software
 
-You will need to install the CO2 version of the firmware by heading over to the [update page](https://everythingsmarthome.github.io/everything-presence-lite/updating.html), selecting Home Assistant, select LD2450 (the default sensor), select CO2 and then choose between the Bluetooth or Non-Bluetooth versions of the firmware. Finally hit the Connect button and follow the instructions.
+You will need to install the CO2 version of the firmware by heading over to the [update page](https://pla10.github.io/my-presence-lite-tsl2561/updating.html), selecting Home Assistant, select LD2450 (the default sensor), select CO2 and then choose between the Bluetooth or Non-Bluetooth versions of the firmware. Finally hit the Connect button and follow the instructions.
 
 Once installed, the CO2 sensor should automatically show up in Home Assistant, nice!
 

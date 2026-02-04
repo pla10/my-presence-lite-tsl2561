@@ -10,7 +10,7 @@ nav_order: 13
 
 
 {: .warning-title }
-Please make sure you have updated your EPL to the latest available firmware by going to [Updating](https://everythingsmarthome.github.io/everything-presence-lite/updating.html){: .btn .btn-blue }
+Please make sure you have updated your EPL to the latest available firmware by going to [Updating](https://pla10.github.io/my-presence-lite-tsl2561/updating.html){: .btn .btn-blue }
 
 
 Lets cover off some of the commonly asked questions.
@@ -20,7 +20,7 @@ Lets cover off some of the commonly asked questions.
 
 **Will the EPL detect moving animals or objects?** Yes the EPL will detect any moving thing; a pet, fan or even even moving objects such as blinds.
 
-**Help, my sensor is giving false detections!** The vast majority of the time, the sensor is detecting movement accurately, but users aren't aware of how tiny a movement it is able to detect. Make sure to check out the [tuning guide](https://everythingsmarthome.github.io/everything-presence-lite/tuning.html) for tweaking the settings to get the best results!
+**Help, my sensor is giving false detections!** The vast majority of the time, the sensor is detecting movement accurately, but users aren't aware of how tiny a movement it is able to detect. Make sure to check out the [tuning guide](https://pla10.github.io/my-presence-lite-tsl2561/tuning.html) for tweaking the settings to get the best results!
 
 **Can the sensor detect the direction of motion or zones?** 
 No, it will only show a detected or not detected status. 

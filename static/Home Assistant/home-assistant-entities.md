@@ -84,7 +84,7 @@ Click the entity you want to enable, then click the settings icon in the right h
 
 Wait 30 seconds, refresh the page and the entity is now enabled. Repeat this for each entity, making sure to do all 5 entities to activate a single zone.
 
-For setting up zones in a visual way, I recommend checking out the docs [here](https://everythingsmarthome.github.io/everything-presence-lite/Home%20Assistant/creating-zones.html)
+For setting up zones in a visual way, I recommend checking out the docs [here](https://pla10.github.io/my-presence-lite-tsl2561/Home%20Assistant/creating-zones.html)
 
 ### Targets
 

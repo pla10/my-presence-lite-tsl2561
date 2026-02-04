@@ -302,7 +302,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             var manifestFilename = "everything-presence-lite-ha" + sensorSuffix + optionSuffix + moduleSuffix + "-manifest.json";
 
-            var manifestURL = "https://everythingsmarthome.github.io/everything-presence-lite/" + manifestFilename;
+            var manifestURL = "https://pla10.github.io/my-presence-lite-tsl2561/" + manifestFilename;
 
             installButton.setAttribute("manifest", manifestURL);
         });
