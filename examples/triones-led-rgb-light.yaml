@@ -53,6 +53,10 @@ globals:
     type: bool
     restore_value: no
     initial_value: "false"
+  - id: triones_effect_code
+    type: int
+    restore_value: no
+    initial_value: "0"
 
 # Script per inviare comandi
 script:
@@ -98,6 +102,27 @@ script:
             - logger.log:
                 format: "Colore inviato: R=%d G=%d B=%d"
                 args: ["id(triones_r)", "id(triones_g)", "id(triones_b)"]
+
+  # Script per inviare effetti (usa ble_write invece di get_characteristic)
+  - id: triones_send_effect_script
+    then:
+      - if:
+          condition:
+            lambda: "return id(led_camera_connected);"
+          then:
+            - ble_client.ble_write:
+                id: led_camera
+                service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+                characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+                value: !lambda |-
+                  int speed = (int)id(triones_speed).state;
+                  int delay_val = 31 - (speed * 30 / 100);
+                  if (delay_val < 1) delay_val = 1;
+                  if (delay_val > 31) delay_val = 31;
+                  return {0xBB, (uint8_t)id(triones_effect_code), (uint8_t)delay_val, 0x44};
+            - logger.log:
+                format: "Effetto inviato: 0x%02X"
+                args: ["id(triones_effect_code)"]
 
 # Sensore per stato connessione (opzionale - per vedere in HA)
 binary_sensor:
@@ -223,20 +248,13 @@ select:
             else if (selected == "Strobe Bianco") effect_code = 0x37;
             else if (selected == "Jump Colori") effect_code = 0x38;
 
-            if (effect_code > 0 && id(led_camera_connected)) {
-              int speed = (int)id(triones_speed).state;
-              int delay_val = 31 - (speed * 30 / 100);
-              if (delay_val < 1) delay_val = 1;
-              if (delay_val > 31) delay_val = 31;
-              
-              uint8_t cmd[] = {0xBB, (uint8_t)effect_code, (uint8_t)delay_val, 0x44};
-              
-              auto chr = id(led_camera).get_characteristic(0xFFD5, 0xFFD9);
-              if (chr != nullptr) {
-                chr->write_value(cmd, sizeof(cmd));
-                ESP_LOGI("triones", "Effetto inviato: 0x%02X delay: %d", effect_code, delay_val);
-              }
-            }
+            // Salva il codice effetto nella globale
+            id(triones_effect_code) = effect_code;
+        - if:
+            condition:
+              lambda: "return id(triones_effect_code) > 0;"
+            then:
+              - script.execute: triones_send_effect_script
 
 # Slider per velocità effetti
 number:
