@@ -250,11 +250,11 @@ select:
 
             // Salva il codice effetto nella globale
             id(triones_effect_code) = effect_code;
-        - if:
-            condition:
-              lambda: "return id(triones_effect_code) > 0;"
-            then:
-              - script.execute: triones_send_effect_script
+
+            // Chiama lo script direttamente se effect_code > 0
+            if (effect_code > 0) {
+              id(triones_send_effect_script).execute();
+            }
 
 # Slider per velocità effetti
 number:
