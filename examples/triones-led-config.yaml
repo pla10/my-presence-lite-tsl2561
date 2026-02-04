@@ -1,0 +1,168 @@
+# ============================================================
+# ESEMPIO: Configurazione per controllare luci Triones BLE
+# ============================================================
+# Aggiungi questo contenuto al tuo file YAML locale in ESPHome
+# dopo la sezione "packages:"
+# ============================================================
+
+# Abilita BLE tracker (necessario per ble_client)
+esp32_ble_tracker:
+  scan_parameters:
+    active: true
+
+# Client BLE per la luce Triones
+ble_client:
+  - mac_address: 12:05:00:00:03:86 # <-- Cambia con il MAC della tua luce
+    id: led_camera
+
+# Pulsanti per controllare la luce (metodo semplice)
+button:
+  - platform: template
+    name: "LED Camera ON"
+    icon: "mdi:lightbulb-on"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          value: [0xCC, 0x23, 0x33]
+
+  - platform: template
+    name: "LED Camera OFF"
+    icon: "mdi:lightbulb-off"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          value: [0xCC, 0x24, 0x33]
+
+  # Effetti
+  - platform: template
+    name: "LED Camera - Jump RGB"
+    icon: "mdi:palette"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          # 0xBB = comando effetto, 0x25 = Jump RGB, 0x10 = velocità media, 0x44 = terminatore
+          value: [0xBB, 0x25, 0x10, 0x44]
+
+  - platform: template
+    name: "LED Camera - Fade RGB"
+    icon: "mdi:palette"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          value: [0xBB, 0x26, 0x10, 0x44]
+
+  - platform: template
+    name: "LED Camera - Strobe RGB"
+    icon: "mdi:palette"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          value: [0xBB, 0x27, 0x10, 0x44]
+
+  # Colori predefiniti
+  - platform: template
+    name: "LED Camera - Rosso"
+    icon: "mdi:palette"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          # 0x56 = comando colore, R, G, B, 0x00, 0xF0, 0xAA
+          value: [0x56, 0xFF, 0x00, 0x00, 0x00, 0xF0, 0xAA]
+
+  - platform: template
+    name: "LED Camera - Verde"
+    icon: "mdi:palette"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          value: [0x56, 0x00, 0xFF, 0x00, 0x00, 0xF0, 0xAA]
+
+  - platform: template
+    name: "LED Camera - Blu"
+    icon: "mdi:palette"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          value: [0x56, 0x00, 0x00, 0xFF, 0x00, 0xF0, 0xAA]
+
+  - platform: template
+    name: "LED Camera - Bianco"
+    icon: "mdi:palette"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          value: [0x56, 0xFF, 0xFF, 0xFF, 0x00, 0xF0, 0xAA]
+
+  - platform: template
+    name: "LED Camera - Giallo"
+    icon: "mdi:palette"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          value: [0x56, 0xFF, 0xFF, 0x00, 0x00, 0xF0, 0xAA]
+
+  - platform: template
+    name: "LED Camera - Ciano"
+    icon: "mdi:palette"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          value: [0x56, 0x00, 0xFF, 0xFF, 0x00, 0xF0, 0xAA]
+
+  - platform: template
+    name: "LED Camera - Magenta"
+    icon: "mdi:palette"
+    on_press:
+      - ble_client.ble_write:
+          id: led_camera
+          service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+          characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+          value: [0x56, 0xFF, 0x00, 0xFF, 0x00, 0xF0, 0xAA]
+
+# ============================================================
+# LISTA EFFETTI TRIONES (codice effetto per byte 2):
+# 0x25 = Jump RGB
+# 0x26 = Fade RGB
+# 0x27 = Strobe/Flash RGB
+# 0x28 = Jump 7 colori
+# 0x29 = Fade 7 colori
+# 0x2A = Flash 7 colori
+# 0x2B = Jump Rosso
+# 0x2C = Fade Rosso
+# 0x2D = Flash Rosso
+# 0x2E = Jump Verde
+# 0x2F = Fade Verde
+# 0x30 = Flash Verde
+# 0x31 = Jump Blu
+# 0x32 = Fade Blu
+# 0x33 = Flash Blu
+# 0x34 = Jump Giallo
+# 0x35 = Fade Giallo
+# 0x36 = Flash Giallo
+# 0x37 = Jump Ciano
+# 0x38 = Fade Ciano
+#
+# VELOCITÀ (byte 3): 0x01 (più veloce) - 0x1F (più lento)
+# ============================================================

@@ -1,0 +1,273 @@
+# ============================================================
+# CONFIGURAZIONE COMPLETA: Luce RGB Triones BLE
+# ============================================================
+# Copia tutto il contenuto di questo file nel tuo YAML ESPHome
+# DOPO la sezione "packages:"
+# ============================================================
+
+# Abilita BLE tracker (necessario per ble_client)
+esp32_ble_tracker:
+  scan_parameters:
+    active: true
+
+# Client BLE per la luce Triones
+ble_client:
+  - mac_address: 12:05:00:00:03:86 # <-- Cambia con il MAC della tua luce
+    id: led_camera
+    on_connect:
+      - logger.log: "Connesso alla luce Triones!"
+      - globals.set:
+          id: led_camera_connected
+          value: "true"
+      # Ferma lo scan BLE per risparmiare risorse
+      - esp32_ble_tracker.stop_scan:
+      - logger.log: "BLE scan fermato per risparmiare risorse"
+    on_disconnect:
+      - logger.log: "Disconnesso dalla luce Triones"
+      - globals.set:
+          id: led_camera_connected
+          value: "false"
+      # Riavvia lo scan BLE per riconnettersi
+      - esp32_ble_tracker.start_scan:
+      - logger.log: "BLE scan riavviato per riconnessione"
+
+# Variabili globali per memorizzare lo stato
+globals:
+  - id: led_camera_connected
+    type: bool
+    restore_value: no
+    initial_value: "false"
+  - id: triones_r
+    type: int
+    restore_value: no
+    initial_value: "255"
+  - id: triones_g
+    type: int
+    restore_value: no
+    initial_value: "255"
+  - id: triones_b
+    type: int
+    restore_value: no
+    initial_value: "255"
+
+# Script per inviare comandi
+script:
+  - id: triones_send_on
+    then:
+      - if:
+          condition:
+            lambda: "return id(led_camera_connected);"
+          then:
+            - ble_client.ble_write:
+                id: led_camera
+                service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+                characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+                value: [0xCC, 0x23, 0x33]
+
+  - id: triones_send_off
+    then:
+      - if:
+          condition:
+            lambda: "return id(led_camera_connected);"
+          then:
+            - ble_client.ble_write:
+                id: led_camera
+                service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+                characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+                value: [0xCC, 0x24, 0x33]
+
+  - id: triones_send_color
+    then:
+      - if:
+          condition:
+            lambda: "return id(led_camera_connected);"
+          then:
+            - ble_client.ble_write:
+                id: led_camera
+                service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+                characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+                value: !lambda |-
+                  return {0x56, (uint8_t)id(triones_r), (uint8_t)id(triones_g), (uint8_t)id(triones_b), 0x00, 0xF0, 0xAA};
+
+  - id: triones_send_effect
+    parameters:
+      effect_code: int
+      speed: int
+    then:
+      - if:
+          condition:
+            lambda: "return id(led_camera_connected);"
+          then:
+            - ble_client.ble_write:
+                id: led_camera
+                service_uuid: "0000ffd5-0000-1000-8000-00805f9b34fb"
+                characteristic_uuid: "0000ffd9-0000-1000-8000-00805f9b34fb"
+                value: !lambda |-
+                  // speed 0-100 -> delay 1-31 (inverted)
+                  int delay = 31 - (speed * 30 / 100);
+                  if (delay < 1) delay = 1;
+                  if (delay > 31) delay = 31;
+                  return {0xBB, (uint8_t)effect_code, (uint8_t)delay, 0x44};
+
+# Sensore per stato connessione (opzionale - per vedere in HA)
+binary_sensor:
+  - platform: template
+    name: "LED Camera Connesso"
+    id: led_camera_connected_sensor
+    lambda: "return id(led_camera_connected);"
+
+# Luce RGB controllabile
+light:
+  - platform: rgb
+    name: "LED Camera"
+    id: triones_light
+    icon: "mdi:led-strip-variant"
+    red: triones_red_output
+    green: triones_green_output
+    blue: triones_blue_output
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      - script.execute: triones_send_on
+      - delay: 100ms
+      - script.execute: triones_send_color
+    on_turn_off:
+      - script.execute: triones_send_off
+
+# Output template per RGB
+output:
+  - platform: template
+    id: triones_red_output
+    type: float
+    write_action:
+      - globals.set:
+          id: triones_r
+          value: !lambda "return state * 255;"
+      - if:
+          condition:
+            light.is_on: triones_light
+          then:
+            - script.execute: triones_send_color
+
+  - platform: template
+    id: triones_green_output
+    type: float
+    write_action:
+      - globals.set:
+          id: triones_g
+          value: !lambda "return state * 255;"
+      - if:
+          condition:
+            light.is_on: triones_light
+          then:
+            - script.execute: triones_send_color
+
+  - platform: template
+    id: triones_blue_output
+    type: float
+    write_action:
+      - globals.set:
+          id: triones_b
+          value: !lambda "return state * 255;"
+      - if:
+          condition:
+            light.is_on: triones_light
+          then:
+            - script.execute: triones_send_color
+
+# Select per effetti (più affidabile degli effetti lambda)
+select:
+  - platform: template
+    name: "LED Camera Effetto"
+    id: triones_effect
+    icon: "mdi:palette"
+    optimistic: true
+    options:
+      - "Nessuno"
+      - "Rainbow"
+      - "Fade Rosso"
+      - "Fade Verde"
+      - "Fade Blu"
+      - "Fade Giallo"
+      - "Fade Ciano"
+      - "Fade Viola"
+      - "Fade Bianco"
+      - "Cross Fade RG"
+      - "Cross Fade RB"
+      - "Cross Fade GB"
+      - "Strobe Colori"
+      - "Strobe Rosso"
+      - "Strobe Verde"
+      - "Strobe Blu"
+      - "Strobe Giallo"
+      - "Strobe Ciano"
+      - "Strobe Viola"
+      - "Strobe Bianco"
+      - "Jump Colori"
+    initial_option: "Nessuno"
+    on_value:
+      then:
+        - lambda: |-
+            int effect_code = 0;
+            std::string selected = id(triones_effect).state;
+
+            if (selected == "Rainbow") effect_code = 0x25;
+            else if (selected == "Fade Rosso") effect_code = 0x26;
+            else if (selected == "Fade Verde") effect_code = 0x27;
+            else if (selected == "Fade Blu") effect_code = 0x28;
+            else if (selected == "Fade Giallo") effect_code = 0x29;
+            else if (selected == "Fade Ciano") effect_code = 0x2A;
+            else if (selected == "Fade Viola") effect_code = 0x2B;
+            else if (selected == "Fade Bianco") effect_code = 0x2C;
+            else if (selected == "Cross Fade RG") effect_code = 0x2D;
+            else if (selected == "Cross Fade RB") effect_code = 0x2E;
+            else if (selected == "Cross Fade GB") effect_code = 0x2F;
+            else if (selected == "Strobe Colori") effect_code = 0x30;
+            else if (selected == "Strobe Rosso") effect_code = 0x31;
+            else if (selected == "Strobe Verde") effect_code = 0x32;
+            else if (selected == "Strobe Blu") effect_code = 0x33;
+            else if (selected == "Strobe Giallo") effect_code = 0x34;
+            else if (selected == "Strobe Ciano") effect_code = 0x35;
+            else if (selected == "Strobe Viola") effect_code = 0x36;
+            else if (selected == "Strobe Bianco") effect_code = 0x37;
+            else if (selected == "Jump Colori") effect_code = 0x38;
+
+            if (effect_code > 0 && id(led_camera_connected)) {
+              // Usa velocità media (50)
+              int speed = (int)id(triones_speed).state;
+              int delay = 31 - (speed * 30 / 100);
+              if (delay < 1) delay = 1;
+              if (delay > 31) delay = 31;
+              
+              std::vector<uint8_t> cmd = {0xBB, (uint8_t)effect_code, (uint8_t)delay, 0x44};
+              
+              auto chr = id(led_camera).get_characteristic(0xFFD5, 0xFFD9);
+              if (chr != nullptr) {
+                chr->write_value(cmd);
+                ESP_LOGI("triones", "Effetto inviato: 0x%02X delay: %d", effect_code, delay);
+              }
+            }
+
+# Slider per velocità effetti
+number:
+  - platform: template
+    name: "LED Camera Velocità Effetto"
+    id: triones_speed
+    icon: "mdi:speedometer"
+    unit_of_measurement: "%"
+    min_value: 0
+    max_value: 100
+    step: 10
+    initial_value: 50
+    optimistic: true
+    restore_value: true
+    on_value:
+      then:
+        - lambda: |-
+            // Rinvia l'effetto corrente con la nuova velocità
+            std::string selected = id(triones_effect).state;
+            if (selected != "Nessuno" && id(led_camera_connected)) {
+              // Trigger re-send dell'effetto
+              auto call = id(triones_effect).make_call();
+              call.set_option(selected);
+              call.perform();
+            }
