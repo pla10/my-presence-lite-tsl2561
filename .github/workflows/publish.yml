@@ -1,4 +1,4 @@
-name: Build and Publish ESPHome firmware and website
+name: Build and Publish ESPHome firmware
 
 on:
   pull_request:
@@ -7,271 +7,109 @@ on:
     branches:
       - main
     paths:
-      - '**.yaml'
+      - "**.yaml"
+
+# Prevent multiple deployments at the same time
+concurrency:
+  group: "pages-deploy"
+  cancel-in-progress: false
 
 jobs:
-  publish-everything-presence-lite-ha:
-    name: Publish Everything Presence Lite HA
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha.yaml
-      name: Everything Presence Lite HA
-      manifest_filename: everything-presence-lite-ha-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha
-  publish-everything-presence-lite-ha-no-ble:
-    name: Publish Everything Presence Lite HA No BLE
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-no-ble.yaml
-      name: Everything Presence Lite HA No BLE
-      manifest_filename: everything-presence-lite-ha-no-ble-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-no-ble
-  publish-everything-presence-lite-ha-ld2410:
-    name: Publish Everything Presence Lite HA LD2410
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-ld2410.yaml
-      name: Everything Presence Lite HA LD2410
-      manifest_filename: everything-presence-lite-ha-ld2410-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-ld2410
-  publish-everything-presence-lite-ha-ld2410-no-ble:
-    name: Publish Everything Presence Lite HA LD2410 No BLE
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-ld2410-no-ble.yaml
-      name: Everything Presence Lite HA LD2410 No BLE
-      manifest_filename: everything-presence-lite-ha-ld2410-no-ble-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-ld2410-no-ble
-  publish-everything-presence-lite-ha-sen0395:
-    name: Publish Everything Presence Lite HA SEN0395
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-sen0395.yaml
-      name: Everything Presence Lite HA SEN0395
-      manifest_filename: everything-presence-lite-ha-sen0395-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-sen0395
-  publish-everything-presence-lite-ha-sen0395-no-ble:
-    name: Publish Everything Presence Lite HA SEN0395 No BLE
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-sen0395-no-ble.yaml
-      name: Everything Presence Lite HA SEN0395 No BLE
-      manifest_filename: everything-presence-lite-ha-sen0395-no-ble-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-sen0395-no-ble
-  publish-everything-presence-lite-ha-sen0609:
-    name: Publish Everything Presence Lite HA SEN0609
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-sen0609.yaml
-      name: Everything Presence Lite HA SEN0609
-      manifest_filename: everything-presence-lite-ha-sen0609-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-sen0609
-  publish-everything-presence-lite-ha-sen0609-no-ble:
-    name: Publish Everything Presence Lite HA SEN0609 No BLE
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-sen0609-no-ble.yaml
-      name: Everything Presence Lite HA SEN0609 No BLE
-      manifest_filename: everything-presence-lite-ha-sen0609-no-ble-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-sen0609-no-ble
-  publish-everything-presence-lite-ha-mr24hpc1:
-    name: Publish Everything Presence Lite HA mr24hpc1
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-mr24hpc1.yaml
-      name: Everything Presence Lite HA mr24hpc1
-      manifest_filename: everything-presence-lite-ha-mr24hpc1-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-mr24hpc1
-  publish-everything-presence-lite-ha-mr24hpc1-no-ble:
-    name: Publish Everything Presence Lite HA mr24hpc1 No BLE
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-mr24hpc1-no-ble.yaml
-      name: Everything Presence Lite HA mr24hpc1 No BLE
-      manifest_filename: everything-presence-lite-ha-mr24hpc1-no-ble-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-mr24hpc1-no-ble
-
-  publish-everything-presence-lite-ha-co2:
-    name: Publish Everything Presence Lite HA CO₂
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-co2.yaml
-      name: Everything Presence Lite HA CO₂
-      manifest_filename: everything-presence-lite-ha-co2-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-co2
-
-  publish-everything-presence-lite-ha-no-ble-co2:
-    name: Publish Everything Presence Lite HA No BLE CO₂
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-no-ble-co2.yaml
-      name: Everything Presence Lite HA No BLE CO₂
-      manifest_filename: everything-presence-lite-ha-no-ble-co2-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-no-ble-co2
-
-  publish-everything-presence-lite-ha-ld2410-co2:
-    name: Publish Everything Presence Lite HA LD2410 CO₂
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-ld2410-co2.yaml
-      name: Everything Presence Lite HA LD2410 CO₂
-      manifest_filename: everything-presence-lite-ha-ld2410-co2-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-ld2410-co2
-
-  publish-everything-presence-lite-ha-ld2410-no-ble-co2:
-    name: Publish Everything Presence Lite HA LD2410 No BLE CO₂
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-ld2410-no-ble-co2.yaml
-      name: Everything Presence Lite HA LD2410 No BLE CO₂
-      manifest_filename: everything-presence-lite-ha-ld2410-no-ble-co2-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-ld2410-no-ble-co2
-
-  publish-everything-presence-lite-ha-sen0395-co2:
-    name: Publish Everything Presence Lite HA SEN0395 CO₂
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-sen0395-co2.yaml
-      name: Everything Presence Lite HA SEN0395 CO₂
-      manifest_filename: everything-presence-lite-ha-sen0395-co2-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-sen0395-co2
-
-  publish-everything-presence-lite-ha-sen0395-no-ble-co2:
-    name: Publish Everything Presence Lite HA SEN0395 No BLE CO₂
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-sen0395-no-ble-co2.yaml
-      name: Everything Presence Lite HA SEN0395 No BLE CO₂
-      manifest_filename: everything-presence-lite-ha-sen0395-no-ble-co2-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-sen0395-no-ble-co2
-
-  publish-everything-presence-lite-ha-sen0609-co2:
-    name: Publish Everything Presence Lite HA SEN0609 CO₂
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-sen0609-co2.yaml
-      name: Everything Presence Lite HA SEN0609 CO₂
-      manifest_filename: everything-presence-lite-ha-sen0609-co2-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-sen0609-co2
-
-  publish-everything-presence-lite-ha-sen0609-no-ble-co2:
-    name: Publish Everything Presence Lite HA SEN0609 No BLE CO₂
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-sen0609-no-ble-co2.yaml
-      name: Everything Presence Lite HA SEN0609 No BLE CO₂
-      manifest_filename: everything-presence-lite-ha-sen0609-no-ble-co2-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-sen0609-no-ble-co2
-
-  publish-everything-presence-lite-ha-mr24hpc1-co2:
-    name: Publish Everything Presence Lite HA mr24hpc1 CO₂
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-mr24hpc1-co2.yaml
-      name: Everything Presence Lite HA mr24hpc1 CO₂
-      manifest_filename: everything-presence-lite-ha-mr24hpc1-co2-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-mr24hpc1-co2
-
-  publish-everything-presence-lite-ha-mr24hpc1-no-ble-co2:
-    name: Publish Everything Presence Lite HA mr24hpc1 No BLE CO₂
-    uses: pla10/my-presence-lite-tsl2561/.github/workflows/esphome-build.yml@main
-    with:
-      files: everything-presence-lite-ha-mr24hpc1-no-ble-co2.yaml
-      name: Everything Presence Lite HA mr24hpc1 No BLE CO₂
-      manifest_filename: everything-presence-lite-ha-mr24hpc1-no-ble-co2-manifest.json
-      clean: false
-      esphome_version: latest
-      directory_name: everything-presence-lite-ha-mr24hpc1-no-ble-co2
-
-  # Generate firmware index after all builds complete
-  generate-firmware-index:
-    name: Generate Firmware Index
+  build-ha:
+    name: Build Everything Presence Lite HA
     runs-on: ubuntu-latest
-    needs:
-      - publish-everything-presence-lite-ha
-      - publish-everything-presence-lite-ha-no-ble
-      - publish-everything-presence-lite-ha-ld2410
-      - publish-everything-presence-lite-ha-ld2410-no-ble
-      - publish-everything-presence-lite-ha-sen0395
-      - publish-everything-presence-lite-ha-sen0395-no-ble
-      - publish-everything-presence-lite-ha-sen0609
-      - publish-everything-presence-lite-ha-sen0609-no-ble
-      - publish-everything-presence-lite-ha-mr24hpc1
-      - publish-everything-presence-lite-ha-mr24hpc1-no-ble
-      - publish-everything-presence-lite-ha-co2
-      - publish-everything-presence-lite-ha-no-ble-co2
-      - publish-everything-presence-lite-ha-ld2410-co2
-      - publish-everything-presence-lite-ha-ld2410-no-ble-co2
-      - publish-everything-presence-lite-ha-sen0395-co2
-      - publish-everything-presence-lite-ha-sen0395-no-ble-co2
-      - publish-everything-presence-lite-ha-sen0609-co2
-      - publish-everything-presence-lite-ha-sen0609-no-ble-co2
-      - publish-everything-presence-lite-ha-mr24hpc1-co2
-      - publish-everything-presence-lite-ha-mr24hpc1-no-ble-co2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: esphome/build-action@v6
+        id: esphome-build
+        with:
+          yaml-file: everything-presence-lite-ha.yaml
+          version: latest
+      - run: |
+          mkdir -p output/everything-presence-lite-ha
+          mv "${{ steps.esphome-build.outputs.name }}"/* output/everything-presence-lite-ha/
+      - name: Create manifest
+        run: |
+          jq '{
+            "name": "Everything Presence Lite HA",
+            "version": "${{ steps.esphome-build.outputs.project-version }}",
+            "home_assistant_domain": "esphome",
+            "new_install_skip_erase": false,
+            "builds": [.]
+          }' output/everything-presence-lite-ha/manifest.json > output/everything-presence-lite-ha-manifest.json
+
+          # Fix paths in manifest
+          jq '
+            .builds[].ota.path |= "everything-presence-lite-ha/\(.)" |
+            .builds[].parts[].path |= "everything-presence-lite-ha/\(.)"
+          ' output/everything-presence-lite-ha-manifest.json > output/temp.json
+          mv output/temp.json output/everything-presence-lite-ha-manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firmware-ha
+          path: output/
+
+  build-ha-no-ble:
+    name: Build Everything Presence Lite HA No BLE
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: esphome/build-action@v6
+        id: esphome-build
+        with:
+          yaml-file: everything-presence-lite-ha-no-ble.yaml
+          version: latest
+      - run: |
+          mkdir -p output/everything-presence-lite-ha-no-ble
+          mv "${{ steps.esphome-build.outputs.name }}"/* output/everything-presence-lite-ha-no-ble/
+      - name: Create manifest
+        run: |
+          jq '{
+            "name": "Everything Presence Lite HA No BLE",
+            "version": "${{ steps.esphome-build.outputs.project-version }}",
+            "home_assistant_domain": "esphome",
+            "new_install_skip_erase": false,
+            "builds": [.]
+          }' output/everything-presence-lite-ha-no-ble/manifest.json > output/everything-presence-lite-ha-no-ble-manifest.json
+
+          # Fix paths in manifest
+          jq '
+            .builds[].ota.path |= "everything-presence-lite-ha-no-ble/\(.)" |
+            .builds[].parts[].path |= "everything-presence-lite-ha-no-ble/\(.)"
+          ' output/everything-presence-lite-ha-no-ble-manifest.json > output/temp.json
+          mv output/temp.json output/everything-presence-lite-ha-no-ble-manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firmware-ha-no-ble
+          path: output/
+
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [build-ha, build-ha-no-ble]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Download HA firmware
+        uses: actions/download-artifact@v4
         with:
-          node-version: '20'
+          name: firmware-ha
+          path: output/
 
-      - name: Get version from esphome project
-        id: version
-        run: |
-          VERSION=$(grep -m1 'version:' common/everything-presence-lite-base.yaml | sed 's/.*version: *//' | tr -d '"' | tr -d "'")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Detected version: $VERSION"
+      - name: Download HA No BLE firmware
+        uses: actions/download-artifact@v4
+        with:
+          name: firmware-ha-no-ble
+          path: output/
 
-      - name: Generate firmware index
-        run: |
-          node scripts/generate-firmware-index.js --version "${{ steps.version.outputs.version }}"
+      - name: Copy static files
+        run: cp -R static/* output/
 
-      - name: Deploy firmware index to GitHub Pages
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: .
-          target-folder: /
-          clean: false
-          single-commit: false
-          commit-message: "Update firmware-index.json for v${{ steps.version.outputs.version }}"
+          branch: gh-pages
+          folder: output
+          clean: true
+          force: true
