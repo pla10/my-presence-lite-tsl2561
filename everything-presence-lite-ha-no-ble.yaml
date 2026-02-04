@@ -1,6 +1,6 @@
 substitutions:
   name: "everything-presence-lite"
-  friendly_name: "Everything Presence Lite Test"
+  friendly_name: "Everything Presence Lite"
   illuminance_update_interval: "2s"
   hidden_ssid: "false"
   log_level: DEBUG

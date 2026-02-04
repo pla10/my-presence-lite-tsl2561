@@ -1,12 +1,9 @@
 title: Everything Presence Lite
 description: Documentation for the Everything Presence Lite!
-url: https://everythingsmarthome.github.io
-#remote_theme: just-the-docs/just-the-docs@v0.7.0
-theme: just-the-docs
-baseurl: "/everything-presence-lite"
-
-aux_links:
-  Template Repository: https://github.com/just-the-docs/just-the-docs-template
+url: https://pla10.github.io
+remote_theme: just-the-docs/just-the-docs@v0.7.0
+#theme: just-the-docs
+baseurl: "/my-presence-lite-tsl2561"
 
 search_enabled: true
 search:
@@ -42,7 +39,10 @@ heading_anchors: true
 # Aux links for the upper right navigation
 aux_links:
   "View on GitHub":
-    - "https://github.com/EverythingSmartHome/everything-presence-lite"
+    - "https://github.com/pla10/my-presence-lite-tsl2561"
+
+plugins:
+  - jekyll-remote-theme
 
 # Makes Aux links open in a new tab. Default is false
 aux_links_new_tab: false
