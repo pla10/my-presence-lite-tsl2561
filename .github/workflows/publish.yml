@@ -14,6 +14,11 @@ concurrency:
   group: "pages-deploy"
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build-ha:
     name: Build Everything Presence Lite HA
@@ -88,6 +93,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-ha, build-ha-no-ble]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -95,21 +103,54 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: firmware-ha
-          path: output/
+          path: _site/
 
       - name: Download HA No BLE firmware
         uses: actions/download-artifact@v4
         with:
           name: firmware-ha-no-ble
-          path: output/
+          path: _site/
 
       - name: Copy static files
-        run: cp -R static/* output/
+        run: cp -R static/* _site/
+
+      - name: Create index.html
+        run: |
+          cat > _site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Everything Presence Lite - Firmware</title>
+            <style>
+              body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+              h1 { color: #333; }
+              a { color: #0066cc; }
+              .firmware { margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 8px; }
+            </style>
+          </head>
+          <body>
+            <h1>Everything Presence Lite - Custom Firmware</h1>
+            <p>TSL2561 light sensor version with GPIO2 LED</p>
+            <div class="firmware">
+              <h3>Everything Presence Lite HA (with BLE)</h3>
+              <a href="everything-presence-lite-ha-manifest.json">Manifest JSON</a>
+            </div>
+            <div class="firmware">
+              <h3>Everything Presence Lite HA No BLE</h3>
+              <a href="everything-presence-lite-ha-no-ble-manifest.json">Manifest JSON</a>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site/
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: output
-          clean: true
-          force: true
+        id: deployment
+        uses: actions/deploy-pages@v4
