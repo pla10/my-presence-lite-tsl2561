@@ -208,7 +208,7 @@ select:
       then:
         - lambda: |-
             int effect_code = 0;
-            std::string selected = id(triones_effect).state;
+            auto selected = id(triones_effect).current_option();
 
             if (selected == "Rainbow") effect_code = 0x25;
             else if (selected == "Fade Rosso") effect_code = 0x26;
@@ -232,18 +232,18 @@ select:
             else if (selected == "Jump Colori") effect_code = 0x38;
 
             if (effect_code > 0 && id(led_camera_connected)) {
-              // Usa velocità media (50)
+              // Usa velocità dalla slider
               int speed = (int)id(triones_speed).state;
-              int delay = 31 - (speed * 30 / 100);
-              if (delay < 1) delay = 1;
-              if (delay > 31) delay = 31;
+              int delay_val = 31 - (speed * 30 / 100);
+              if (delay_val < 1) delay_val = 1;
+              if (delay_val > 31) delay_val = 31;
               
-              std::vector<uint8_t> cmd = {0xBB, (uint8_t)effect_code, (uint8_t)delay, 0x44};
+              uint8_t cmd[] = {0xBB, (uint8_t)effect_code, (uint8_t)delay_val, 0x44};
               
               auto chr = id(led_camera).get_characteristic(0xFFD5, 0xFFD9);
               if (chr != nullptr) {
-                chr->write_value(cmd);
-                ESP_LOGI("triones", "Effetto inviato: 0x%02X delay: %d", effect_code, delay);
+                chr->write_value(cmd, sizeof(cmd));
+                ESP_LOGI("triones", "Effetto inviato: 0x%02X delay: %d", effect_code, delay_val);
               }
             }
 
@@ -264,7 +264,7 @@ number:
       then:
         - lambda: |-
             // Rinvia l'effetto corrente con la nuova velocità
-            std::string selected = id(triones_effect).state;
+            auto selected = id(triones_effect).current_option();
             if (selected != "Nessuno" && id(led_camera_connected)) {
               // Trigger re-send dell'effetto
               auto call = id(triones_effect).make_call();
