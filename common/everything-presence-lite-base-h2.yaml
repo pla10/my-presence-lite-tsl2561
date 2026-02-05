@@ -31,7 +31,7 @@ esp32:
 network:
   enable_ipv6: true
 
-# OpenThread configuration
+# OpenThread config
 # Get the TLV from your Thread Border Router (Home Assistant -> Settings -> Thread)
 openthread:
   tlv: ${openthread_tlv}
