@@ -1,0 +1,32 @@
+substitutions:
+  name: "everything-presence-lite"
+  friendly_name: "Everything Presence Lite H2"
+  illuminance_update_interval: "2s"
+  log_level: DEBUG
+  # IMPORTANT: Replace this with your Thread network TLV from Home Assistant
+  # Get it from: Settings -> Thread -> (your border router) -> Copy credentials
+  openthread_tlv: "0e080000000000010000000300001035060004001fffe00208dead00beef00cafe0708fddead00beef000005108e21cad1f278474f809ee1c495ed302e030e4f70656e5468726561642d383331660102831601041000000003081a2f375a515a5a3b86"
+
+  device_config:
+    ethernet_enabled: false
+    co2_enabled: false
+    bluetooth_enabled: false
+    board_revision: "1.2"
+    sensor_variant: "ld2450"
+    firmware_channel: "stable"
+    model: "everything-presence-lite-h2"
+
+update:
+  - platform: http_request
+    id: update_http_request
+    name: Everything Presence Lite H2 Firmware
+    source: https://pla10.github.io/my-presence-lite-tsl2561/everything-presence-lite-ha-no-ble-h2-manifest.json
+    disabled_by_default: true
+
+dashboard_import:
+  package_import_url: github://pla10/my-presence-lite-tsl2561/everything-presence-lite-ha-no-ble-h2.yaml@main
+  import_full_config: false
+
+packages:
+  device_base: !include common/everything-presence-lite-base-h2.yaml
+  ld2450_base: !include common/ld2450-base-h2.yaml
