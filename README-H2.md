@@ -20,15 +20,15 @@ This is an **ESP32-H2** variant of the Everything Presence Lite that uses **Open
 | Range | Depends on WiFi | Mesh network |
 | Power | Higher | Lower (mesh advantage) |
 
-## Pin Mappings for ESP32-H2-Zero
+## Pin Mappings for ESP32-H2
 
 | Function | GPIO Pin | Notes |
 |----------|----------|-------|
-| I2C SDA | GPIO8 | TSL2561 light sensor |
-| I2C SCL | GPIO9 | TSL2561 light sensor |
+| I2C SDA | GPIO12 | TSL2561 light sensor (safe non-strapping) |
+| I2C SCL | GPIO11 | TSL2561 light sensor (safe non-strapping) |
 | UART TX | GPIO4 | LD2450 mmWave sensor |
 | UART RX | GPIO5 | LD2450 mmWave sensor |
-| LED | GPIO12 | Status LED |
+| LED | GPIO13 | Status LED |
 | Boot Button | GPIO9 | Factory reset function |
 
 ## Setup Instructions
@@ -89,7 +89,7 @@ The device should automatically appear in Home Assistant via the Thread network:
 
 ### Sensor not detecting
 - Check UART connections to LD2450 (GPIO4 TX, GPIO5 RX)
-- Check I2C connections to TSL2561 (GPIO8 SDA, GPIO9 SCL)
+- Check I2C connections to TSL2561 (GPIO12 SDA, GPIO11 SCL)
 - Run I2C scan to verify sensor addresses
 
 ## Technical Details

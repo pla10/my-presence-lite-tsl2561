@@ -77,14 +77,14 @@ ota:
 http_request:
 
 # I2C configuration for ESP32-H2
-# Using GPIO25 (SDA) and GPIO22 (SCL)
+# Using GPIO12 (SDA) and GPIO11 (SCL)
 i2c:
   - id: bus_a
-    sda: GPIO25
-    scl: GPIO22
+    sda: GPIO12
+    scl: GPIO11
     scan: true
 
-# LED output - using GPIO12 which is typically available on ESP32-H2-Zero
+# LED output - using GPIO13 which is available on ESP32-H2
 output:
   - platform: gpio
     id: esp32_led_output
