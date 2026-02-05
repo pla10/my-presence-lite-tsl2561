@@ -31,10 +31,11 @@ esp32:
 network:
   enable_ipv6: true
 
-# OpenThread config
+# OpenThread configuration
 # Get the TLV from your Thread Border Router (Home Assistant -> Settings -> Thread)
 openthread:
   tlv: ${openthread_tlv}
+  force_dataset: true
 
 # Enable logging
 logger:
