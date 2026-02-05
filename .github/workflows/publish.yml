@@ -88,10 +88,44 @@ jobs:
           name: firmware-ha-no-ble
           path: output/
 
+  build-ha-no-ble-h2:
+    name: Build Everything Presence Lite HA No BLE H2
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: esphome/build-action@v6
+        id: esphome-build
+        with:
+          yaml-file: everything-presence-lite-ha-no-ble-h2.yaml
+          version: latest
+      - run: |
+          mkdir -p output/everything-presence-lite-ha-no-ble-h2
+          mv "${{ steps.esphome-build.outputs.name }}"/* output/everything-presence-lite-ha-no-ble-h2/
+      - name: Create manifest
+        run: |
+          jq '{
+            "name": "Everything Presence Lite HA No BLE H2 (OpenThread)",
+            "version": "${{ steps.esphome-build.outputs.project-version }}",
+            "home_assistant_domain": "esphome",
+            "new_install_skip_erase": false,
+            "builds": [.]
+          }' output/everything-presence-lite-ha-no-ble-h2/manifest.json > output/everything-presence-lite-ha-no-ble-h2-manifest.json
+
+          # Fix paths in manifest
+          jq '
+            .builds[].ota.path |= "everything-presence-lite-ha-no-ble-h2/\(.)" |
+            .builds[].parts[].path |= "everything-presence-lite-ha-no-ble-h2/\(.)"
+          ' output/everything-presence-lite-ha-no-ble-h2-manifest.json > output/temp.json
+          mv output/temp.json output/everything-presence-lite-ha-no-ble-h2-manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firmware-ha-no-ble-h2
+          path: output/
+
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    needs: [build-ha, build-ha-no-ble]
+    needs: [build-ha, build-ha-no-ble, build-ha-no-ble-h2]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment:
       name: github-pages
@@ -109,6 +143,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: firmware-ha-no-ble
+          path: _site/
+
+      - name: Download HA No BLE H2 firmware
+        uses: actions/download-artifact@v4
+        with:
+          name: firmware-ha-no-ble-h2
           path: _site/
 
       - name: Copy static files
@@ -138,6 +178,11 @@ jobs:
             <div class="firmware">
               <h3>Everything Presence Lite HA No BLE</h3>
               <a href="everything-presence-lite-ha-no-ble-manifest.json">Manifest JSON</a>
+            </div>
+            <div class="firmware">
+              <h3>Everything Presence Lite HA No BLE H2 (OpenThread)</h3>
+              <p>ESP32-H2 with Thread/Matter networking - requires Thread Border Router</p>
+              <a href="everything-presence-lite-ha-no-ble-h2-manifest.json">Manifest JSON</a>
             </div>
           </body>
           </html>
